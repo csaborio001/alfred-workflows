@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>bundleid</key>
+	<string></string>
+	<key>connections</key>
+	<dict>
+		<key>BD96AECB-66DC-45AB-9C90-DACDA2F53AD3</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>8831E5D6-2D87-4E24-9BE2-C1A01E7DB99C</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>AFF03B0A-A0C8-4225-B8A2-320E98F646E3</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>EA1B5669-DEE5-4E7A-BDDF-2B3642EDDEF4</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>BD96AECB-66DC-45AB-9C90-DACDA2F53AD3</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+	</dict>
+	<key>createdby</key>
+	<string></string>
+	<key>description</key>
+	<string></string>
+	<key>disabled</key>
+	<false/>
+	<key>name</key>
+	<string>Search Apple Music</string>
+	<key>objects</key>
+	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argumenttype</key>
+				<integer>0</integer>
+				<key>keyword</key>
+				<string>amen</string>
+				<key>subtext</key>
+				<string></string>
+				<key>text</key>
+				<string>Search Apple Music...</string>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.keyword</string>
+			<key>uid</key>
+			<string>EA1B5669-DEE5-4E7A-BDDF-2B3642EDDEF4</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>alfredfiltersresults</key>
+				<false/>
+				<key>alfredfiltersresultsmatchmode</key>
+				<integer>0</integer>
+				<key>argumenttreatemptyqueryasnil</key>
+				<true/>
+				<key>argumenttrimmode</key>
+				<integer>0</integer>
+				<key>argumenttype</key>
+				<integer>0</integer>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>queuedelaycustom</key>
+				<integer>3</integer>
+				<key>queuedelayimmediatelyinitially</key>
+				<true/>
+				<key>queuedelaymode</key>
+				<integer>0</integer>
+				<key>queuemode</key>
+				<integer>1</integer>
+				<key>runningsubtext</key>
+				<string>Searching Apple Music...</string>
+				<key>script</key>
+				<string>import json
+import sys
+import os
+import re
+import subprocess
+import tempfile
+import urllib.parse
+import urllib.request
+
+query = " ".join(sys.argv[1:]).strip()
+
+if not query:
+    print(json.dumps({
+        "items": [{
+            "title": "Search Apple Music",
+            "subtitle": "Example: am gloria trevi",
+            "valid": False
+        }]
+    }))
+    sys.exit(0)
+
+cache_dir = os.path.join(tempfile.gettempdir(), "alfred_apple_music_art")
+os.makedirs(cache_dir, exist_ok=True)
+
+def safe_filename(text):
+    return re.sub(r"[^A-Za-z0-9._-]+", "_", text)
+
+def download_artwork(url, key):
+    if not url:
+        return None
+    filename = safe_filename(key) + ".jpg"
+    filepath = os.path.join(cache_dir, filename)
+    if os.path.exists(filepath) and os.path.getsize(filepath) &gt; 0:
+        return filepath
+    try:
+        req = urllib.request.Request(url, headers={"User-Agent": "Alfred Apple Music Workflow"})
+        with urllib.request.urlopen(req, timeout=5) as response:
+            data = response.read()
+        with open(filepath, "wb") as f:
+            f.write(data)
+        return filepath
+    except Exception:
+        return None
+
+def to_music_app_url(https_url):
+    """Convert https://music.apple.com/... or https://itunes.apple.com/... to music:// deep link."""
+    if not https_url:
+        return https_url
+    url = re.sub(r"^https://music\.apple\.com", "music://music.apple.com", https_url)
+    url = re.sub(r"^https://itunes\.apple\.com", "music://itunes.apple.com", url)
+    return url
+
+def fetch_results(entity, limit):
+    params = {
+        "term": query,
+        "media": "music",
+        "entity": entity,
+        "limit": str(limit)
+    }
+    url = "https://itunes.apple.com/search?" + urllib.parse.urlencode(params)
+    req = urllib.request.Request(url, headers={"User-Agent": "Alfred Apple Music Workflow"})
+    with urllib.request.urlopen(req, timeout=8) as response:
+        return json.loads(response.read().decode("utf-8")).get("results", [])
+
+try:
+    track_results = fetch_results("musicTrack", 8)
+    album_results = fetch_results("album", 6)
+    artist_results = fetch_results("musicArtist", 6)
+except Exception as e:
+    print(json.dumps({
+        "items": [{
+            "title": "Search failed",
+            "subtitle": str(e),
+            "valid": False
+        }]
+    }))
+    sys.exit(0)
+
+def make_item(title, subtitle, view_url, icon_path=None):
+    music_url = to_music_app_url(view_url)
+    item = {
+        "title": title,
+        "subtitle": subtitle,
+        "arg": music_url,
+        "quicklookurl": view_url,   # keep https for Quick Look preview
+        "mods": {
+            "cmd": {
+                "arg": view_url,    # Cmd+Enter copies the shareable https link
+                "subtitle": "Copy Apple Music link"
+            }
+        }
+    }
+    if icon_path:
+        item["icon"] = {"path": icon_path}
+    return item
+
+items = []
+
+for r in track_results:
+    track = r.get("trackName", "Unknown track")
+    artist = r.get("artistName", "Unknown artist")
+    album = r.get("collectionName", "Unknown album")
+    view_url = r.get("trackViewUrl") or r.get("collectionViewUrl")
+    if not view_url:
+        continue
+    artwork_url = r.get("artworkUrl100") or r.get("artworkUrl60")
+    icon_path = None
+    if artwork_url:
+        artwork_url = artwork_url.replace("100x100bb", "300x300bb")
+        icon_path = download_artwork(artwork_url, f"track_{artist}_{album}_{track}")
+    extras = []
+    if r.get("discNumber"):
+        extras.append(f"Disc {r['discNumber']}")
+    if r.get("trackNumber"):
+        extras.append(f"Track {r['trackNumber']}")
+    extra_text = f" • {' • '.join(extras)}" if extras else ""
+    subtitle = f"Song — {album}{extra_text}"
+    items.append(make_item(f"{track} — {artist}", subtitle, view_url, icon_path))
+
+for r in album_results:
+    album = r.get("collectionName", "Unknown album")
+    artist = r.get("artistName", "Unknown artist")
+    view_url = r.get("collectionViewUrl")
+    if not view_url:
+        continue
+    artwork_url = r.get("artworkUrl100") or r.get("artworkUrl60")
+    icon_path = None
+    if artwork_url:
+        artwork_url = artwork_url.replace("100x100bb", "300x300bb")
+        icon_path = download_artwork(artwork_url, f"album_{artist}_{album}")
+    items.append(make_item(album, f"Album — {artist}", view_url, icon_path))
+
+for r in artist_results:
+    artist = r.get("artistName", "Unknown artist")
+    view_url = r.get("artistLinkUrl") or r.get("artistViewUrl")
+    if not view_url:
+        continue
+    items.append(make_item(artist, "Artist", view_url))
+
+if not items:
+    items = [{
+        "title": "No results",
+        "subtitle": f"No Apple Music matches for '{query}'",
+        "valid": False
+    }]
+
+print(json.dumps({"items": items}))</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>subtext</key>
+				<string>Songs, albums, artists</string>
+				<key>title</key>
+				<string>Search Apple Music</string>
+				<key>type</key>
+				<integer>9</integer>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>BD96AECB-66DC-45AB-9C90-DACDA2F53AD3</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>browser</key>
+				<string></string>
+				<key>skipqueryencode</key>
+				<false/>
+				<key>skipvarencode</key>
+				<false/>
+				<key>spaces</key>
+				<string></string>
+				<key>url</key>
+				<string>{query}</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.openurl</string>
+			<key>uid</key>
+			<string>8831E5D6-2D87-4E24-9BE2-C1A01E7DB99C</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>autopaste</key>
+				<false/>
+				<key>clipboardtext</key>
+				<string>{query}</string>
+				<key>ignoredynamicplaceholders</key>
+				<false/>
+				<key>transient</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.clipboard</string>
+			<key>uid</key>
+			<string>AFF03B0A-A0C8-4225-B8A2-320E98F646E3</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
+	</array>
+	<key>readme</key>
+	<string></string>
+	<key>uidata</key>
+	<dict>
+		<key>8831E5D6-2D87-4E24-9BE2-C1A01E7DB99C</key>
+		<dict>
+			<key>xpos</key>
+			<real>95</real>
+			<key>ypos</key>
+			<real>485</real>
+		</dict>
+		<key>AFF03B0A-A0C8-4225-B8A2-320E98F646E3</key>
+		<dict>
+			<key>xpos</key>
+			<real>345</real>
+			<key>ypos</key>
+			<real>485</real>
+		</dict>
+		<key>BD96AECB-66DC-45AB-9C90-DACDA2F53AD3</key>
+		<dict>
+			<key>xpos</key>
+			<real>85</real>
+			<key>ypos</key>
+			<real>285</real>
+		</dict>
+		<key>EA1B5669-DEE5-4E7A-BDDF-2B3642EDDEF4</key>
+		<dict>
+			<key>xpos</key>
+			<real>60</real>
+			<key>ypos</key>
+			<real>70</real>
+		</dict>
+	</dict>
+	<key>userconfigurationconfig</key>
+	<array/>
+	<key>webaddress</key>
+	<string></string>
+</dict>
+</plist>

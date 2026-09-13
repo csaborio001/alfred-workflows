@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>bundleid</key>
+	<string></string>
+	<key>connections</key>
+	<dict>
+		<key>B3C55E63-2017-4884-B6E6-6CC5ED576436</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>F2A54CD6-A6E6-4D45-A097-1C5179E4589A</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+	</dict>
+	<key>createdby</key>
+	<string></string>
+	<key>description</key>
+	<string></string>
+	<key>disabled</key>
+	<false/>
+	<key>name</key>
+	<string>Familia</string>
+	<key>objects</key>
+	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>alfredfiltersresults</key>
+				<false/>
+				<key>alfredfiltersresultsmatchmode</key>
+				<integer>0</integer>
+				<key>argumenttreatemptyqueryasnil</key>
+				<true/>
+				<key>argumenttrimmode</key>
+				<integer>0</integer>
+				<key>argumenttype</key>
+				<integer>1</integer>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>keyword</key>
+				<string>fm</string>
+				<key>queuedelaycustom</key>
+				<integer>3</integer>
+				<key>queuedelayimmediatelyinitially</key>
+				<true/>
+				<key>queuedelaymode</key>
+				<integer>0</integer>
+				<key>queuemode</key>
+				<integer>1</integer>
+				<key>runningsubtext</key>
+				<string></string>
+				<key>script</key>
+				<string>#!/bin/zsh
+
+BASE="$HOME/Library/Mobile Documents/iCloud~md~obsidian/Documents/familia"
+QUERY="${1:-}"
+
+python3 - "$BASE" "$QUERY" &lt;&lt;'PY'
+import os, sys, json, re
+
+base, query = sys.argv[1], sys.argv[2]
+q = query.lower().strip()
+items = []
+
+def read_snippet(path, term):
+    try:
+        text = open(path, "r", encoding="utf-8", errors="ignore").read()
+        text = re.sub(r"\s+", " ", text).strip()
+        if not term:
+            return text[:180]
+        i = text.lower().find(term)
+        if i == -1:
+            return text[:180]
+        start = max(0, i - 70)
+        end = min(len(text), i + 140)
+        return ("…" if start else "") + text[start:end] + ("…" if end &lt; len(text) else "")
+    except Exception:
+        return ""
+
+for root, dirs, files in os.walk(base):
+    dirs[:] = [d for d in dirs if not d.startswith(".")]
+
+    for f in files:
+        if not f.lower().endswith(".md"):
+            continue
+
+        full_path = os.path.join(root, f)
+        rel_path = os.path.relpath(full_path, base)
+        snippet = read_snippet(full_path, q)
+
+        haystack = f"{f} {rel_path} {snippet}".lower()
+        if q and q not in haystack:
+            continue
+
+        items.append({
+            "uid": full_path,
+            "type": "file",
+            "title": f,
+            "subtitle": snippet or rel_path,
+            "arg": full_path,
+            "quicklookurl": full_path,
+            "icon": {"type": "fileicon", "path": full_path}
+        })
+
+print(json.dumps({"items": items[:100]}))
+PY</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>subtext</key>
+				<string></string>
+				<key>title</key>
+				<string>Note to find</string>
+				<key>type</key>
+				<integer>5</integer>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>B3C55E63-2017-4884-B6E6-6CC5ED576436</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>openwith</key>
+				<string></string>
+				<key>sourcefile</key>
+				<string></string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.openfile</string>
+			<key>uid</key>
+			<string>F2A54CD6-A6E6-4D45-A097-1C5179E4589A</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
+	</array>
+	<key>readme</key>
+	<string>md
+→ shows folders
+
+md work::
+→ shows subfolders + all .md files in "work"
+
+md work::meeting
+→ filters markdown files inside "work"</string>
+	<key>uidata</key>
+	<dict>
+		<key>B3C55E63-2017-4884-B6E6-6CC5ED576436</key>
+		<dict>
+			<key>xpos</key>
+			<real>235</real>
+			<key>ypos</key>
+			<real>285</real>
+		</dict>
+		<key>F2A54CD6-A6E6-4D45-A097-1C5179E4589A</key>
+		<dict>
+			<key>xpos</key>
+			<real>595</real>
+			<key>ypos</key>
+			<real>285</real>
+		</dict>
+	</dict>
+	<key>userconfigurationconfig</key>
+	<array/>
+	<key>version</key>
+	<string></string>
+	<key>webaddress</key>
+	<string></string>
+</dict>
+</plist>

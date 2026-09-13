@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>bundleid</key>
+	<string></string>
+	<key>category</key>
+	<string>Tools</string>
+	<key>connections</key>
+	<dict>
+		<key>899D00D5-CE48-4282-9C82-673F42B07511</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>BA798F3F-3589-4E43-A270-7D5A89E8EE20</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>CA17CBAB-5747-4412-B5FA-9E6B41FDC3B8</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>899D00D5-CE48-4282-9C82-673F42B07511</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+	</dict>
+	<key>createdby</key>
+	<string></string>
+	<key>description</key>
+	<string>Display DNS info of passed domain</string>
+	<key>disabled</key>
+	<false/>
+	<key>name</key>
+	<string>Nameservers</string>
+	<key>objects</key>
+	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>alignment</key>
+				<integer>0</integer>
+				<key>backgroundcolor</key>
+				<string></string>
+				<key>fadespeed</key>
+				<integer>0</integer>
+				<key>fillmode</key>
+				<integer>0</integer>
+				<key>font</key>
+				<string></string>
+				<key>ignoredynamicplaceholders</key>
+				<false/>
+				<key>largetypetext</key>
+				<string>{query}</string>
+				<key>textcolor</key>
+				<string></string>
+				<key>wrapat</key>
+				<integer>50</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.largetype</string>
+			<key>uid</key>
+			<string>BA798F3F-3589-4E43-A270-7D5A89E8EE20</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argumenttype</key>
+				<integer>0</integer>
+				<key>keyword</key>
+				<string>NS</string>
+				<key>subtext</key>
+				<string></string>
+				<key>text</key>
+				<string>Enter the domain</string>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.keyword</string>
+			<key>uid</key>
+			<string>CA17CBAB-5747-4412-B5FA-9E6B41FDC3B8</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>script</key>
+				<string>#!/bin/bash
+
+set -u
+
+domain="${1:-}"
+domain="${domain#http://}"
+domain="${domain#https://}"
+domain="${domain%%/*}"
+domain="${domain## }"
+domain="${domain%% }"
+domain="${domain%.}"
+
+if [[ -z "$domain" ]]; then
+	echo "Enter a domain after NS."
+	exit 0
+fi
+
+if [[ ! "$domain" =~ ^[A-Za-z0-9.-]+$ ]]; then
+	echo "Invalid domain: $domain"
+	exit 0
+fi
+
+printf '%s\n' "DNS overview: $domain" ""
+
+show_records() {
+	local label="$1"
+	local record_type="$2"
+	local result
+
+	result="$(/usr/bin/dig +time=2 +tries=1 +short "$domain" "$record_type" 2>/dev/null)"
+	printf '%s\n' "$label"
+	if [[ -n "$result" ]]; then
+		printf '%s\n' "$result" | sed 's/^/  /'
+	else
+		printf '%s\n' "  (none found)"
+	fi
+	printf '\n'
+}
+
+show_records "A (IPv4)" A
+show_records "AAAA (IPv6)" AAAA
+show_records "CNAME (alias)" CNAME
+show_records "NS (nameservers)" NS
+show_records "MX (mail servers)" MX
+show_records "TXT (verification and policy)" TXT
+show_records "CAA (certificate authorities)" CAA
+show_records "SOA (zone authority)" SOA</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>type</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>899D00D5-CE48-4282-9C82-673F42B07511</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+	</array>
+	<key>readme</key>
+	<string></string>
+	<key>uidata</key>
+	<dict>
+		<key>899D00D5-CE48-4282-9C82-673F42B07511</key>
+		<dict>
+			<key>xpos</key>
+			<real>435</real>
+			<key>ypos</key>
+			<real>150</real>
+		</dict>
+		<key>BA798F3F-3589-4E43-A270-7D5A89E8EE20</key>
+		<dict>
+			<key>xpos</key>
+			<real>745</real>
+			<key>ypos</key>
+			<real>150</real>
+		</dict>
+		<key>CA17CBAB-5747-4412-B5FA-9E6B41FDC3B8</key>
+		<dict>
+			<key>xpos</key>
+			<real>140</real>
+			<key>ypos</key>
+			<real>150</real>
+		</dict>
+	</dict>
+	<key>userconfigurationconfig</key>
+	<array/>
+	<key>webaddress</key>
+	<string></string>
+</dict>
+</plist>

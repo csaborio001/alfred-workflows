@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>bundleid</key>
+	<string></string>
+	<key>connections</key>
+	<dict>
+		<key>8A44F91A-120B-42C7-91E2-C3099CB1DA2A</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>4C7D8E91-F1A5-4FF0-AA3D-8C9B4D495282</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>8CC63F81-933E-4CB6-9E56-C039409D919D</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>8A44F91A-120B-42C7-91E2-C3099CB1DA2A</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+	</dict>
+	<key>createdby</key>
+	<string></string>
+	<key>description</key>
+	<string></string>
+	<key>disabled</key>
+	<false/>
+	<key>name</key>
+	<string>Secret Link</string>
+	<key>objects</key>
+	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>lastpathcomponent</key>
+				<false/>
+				<key>onlyshowifquerypopulated</key>
+				<false/>
+				<key>removeextension</key>
+				<false/>
+				<key>text</key>
+				<string></string>
+				<key>title</key>
+				<string>All finished!</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.notification</string>
+			<key>uid</key>
+			<string>4C7D8E91-F1A5-4FF0-AA3D-8C9B4D495282</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>action</key>
+				<integer>0</integer>
+				<key>argument</key>
+				<integer>0</integer>
+				<key>focusedappvariable</key>
+				<false/>
+				<key>focusedappvariablename</key>
+				<string></string>
+				<key>hotkey</key>
+				<integer>1</integer>
+				<key>hotmod</key>
+				<integer>1835008</integer>
+				<key>hotstring</key>
+				<string>S</string>
+				<key>leftcursor</key>
+				<false/>
+				<key>modsmode</key>
+				<integer>0</integer>
+				<key>relatedAppsMode</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.trigger.hotkey</string>
+			<key>uid</key>
+			<string>8CC63F81-933E-4CB6-9E56-C039409D919D</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>script</key>
+				<string>#!/bin/zsh
+
+BW_SESSION=519t43XX0FtJsSac6RibPBFbEQ2a9RrsL9c2/p+aOHkpArphY4t+pVhYsdoRiKL2yfLVqRfUtt12PMJ0bewjMg==
+
+export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+
+SECRET="$(pbpaste)"
+
+if [[ -z "$SECRET" ]]; then
+  echo "Clipboard is empty"
+  exit 1
+fi
+
+# Unlock Bitwarden via macOS password dialog
+BW_PASS=$(osascript -e 'display dialog "Bitwarden master password:" default answer "" with hidden answer buttons {"Cancel","OK"} default button "OK"' -e 'text returned of result') || exit 1
+
+export BW_PASSWORD="$BW_PASS"
+export BW_SESSION="$(bw unlock --passwordenv BW_PASSWORD --raw 2&gt;/dev/null)"
+unset BW_PASSWORD
+unset BW_PASS
+
+if [[ -z "$BW_SESSION" ]]; then
+  echo "Failed to unlock Bitwarden"
+  exit 1
+fi
+
+NAME="Clipboard secret $(date '+%Y-%m-%d %H:%M')"
+
+LINK=$(bw send template send.text \
+  | jq --arg name "$NAME" --arg text "$SECRET" '
+      .name=$name
+      | .text.text=$text
+      | .deletionDate = (now + 86400 | todateiso8601)
+    ' \
+  | bw encode \
+  | bw send create \
+  | jq -r '.accessUrl')
+
+if [[ -n "$LINK" &amp;&amp; "$LINK" != "null" ]]; then
+  echo -n "$LINK" | pbcopy
+  echo "Bitwarden Send link copied"
+else
+  echo "Failed to create Bitwarden Send"
+  exit 1
+fi</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>type</key>
+				<integer>11</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>8A44F91A-120B-42C7-91E2-C3099CB1DA2A</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+	</array>
+	<key>readme</key>
+	<string></string>
+	<key>uidata</key>
+	<dict>
+		<key>4C7D8E91-F1A5-4FF0-AA3D-8C9B4D495282</key>
+		<dict>
+			<key>xpos</key>
+			<real>885</real>
+			<key>ypos</key>
+			<real>105</real>
+		</dict>
+		<key>8A44F91A-120B-42C7-91E2-C3099CB1DA2A</key>
+		<dict>
+			<key>xpos</key>
+			<real>650</real>
+			<key>ypos</key>
+			<real>120</real>
+		</dict>
+		<key>8CC63F81-933E-4CB6-9E56-C039409D919D</key>
+		<dict>
+			<key>xpos</key>
+			<real>395</real>
+			<key>ypos</key>
+			<real>120</real>
+		</dict>
+	</dict>
+	<key>userconfigurationconfig</key>
+	<array/>
+	<key>webaddress</key>
+	<string></string>
+</dict>
+</plist>

@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>bundleid</key>
+	<string></string>
+	<key>category</key>
+	<string>Productivity</string>
+	<key>connections</key>
+	<dict>
+		<key>06EFA993-28F8-4E5D-BF5B-F1A22B9E11E8</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>CA6B2F5F-B5BB-45E0-B9E4-B6A9660CEC0E</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>3BD983B0-971F-4537-B78B-DB712BD9125A</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>C810761B-0CF1-4BED-9476-D3431F5D708E</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>CA6B2F5F-B5BB-45E0-B9E4-B6A9660CEC0E</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>3BD983B0-971F-4537-B78B-DB712BD9125A</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+	</dict>
+	<key>createdby</key>
+	<string>Christian Saborio</string>
+	<key>description</key>
+	<string></string>
+	<key>disabled</key>
+	<false/>
+	<key>name</key>
+	<string>Password Generator</string>
+	<key>objects</key>
+	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>autopaste</key>
+				<false/>
+				<key>clipboardtext</key>
+				<string>{query}</string>
+				<key>ignoredynamicplaceholders</key>
+				<false/>
+				<key>transient</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.clipboard</string>
+			<key>uid</key>
+			<string>3BD983B0-971F-4537-B78B-DB712BD9125A</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>68</integer>
+				<key>script</key>
+				<string>import sys
+import secrets
+import string
+import os
+
+# The mode ("mem" or "complex") is passed from Alfred
+mode = sys.argv[1]
+
+def generate_memorable():
+    """Generates a 4-word password from the built-in macOS dictionary."""
+    try:
+        # Use the built-in macOS dictionary file
+        dict_path = '/usr/share/dict/words'
+        if not os.path.exists(dict_path):
+            return "Error: Dictionary file not found."
+
+        with open(dict_path) as f:
+            words = [word.strip() for word in f]
+        
+        # Filter for reasonably-sized words
+        word_pool = [w for w in words if 4 &lt;= len(w) &lt;= 8 and w.isalpha()]
+        
+        # Select 4 cryptographically random words
+        password_parts = [secrets.choice(word_pool) for _ in range(4)]
+        print("-".join(password_parts), end="")
+
+    except Exception as e:
+        print(f"Error: {e}", end="")
+
+
+def generate_complex():
+    """Generates a 12-character complex password."""
+    # Define the character sets
+    letters = string.ascii_letters
+    digits = string.digits
+    special_chars = '$&amp;*'
+    
+    alphabet = letters + digits + special_chars
+    
+    while True:
+        password = ''.join(secrets.choice(alphabet) for _ in range(12))
+        # Ensure the password contains at least one of each required type
+        if (any(c in letters for c in password) and
+            any(c in digits for c in password) and
+            any(c in special_chars for c in password)):
+            print(password, end="")
+            break
+
+# --- Main Logic ---
+if mode == "mem":
+    generate_memorable()
+elif mode == "complex":
+    generate_complex()
+else:
+    print("Invalid mode. Use 'mem' or 'complex'.", end="")</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>type</key>
+				<integer>9</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>CA6B2F5F-B5BB-45E0-B9E4-B6A9660CEC0E</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argumenttype</key>
+				<integer>0</integer>
+				<key>keyword</key>
+				<string>pw</string>
+				<key>subtext</key>
+				<string>Usage: pw mem | pw complex</string>
+				<key>text</key>
+				<string>Generate Temporary Password</string>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.keyword</string>
+			<key>uid</key>
+			<string>06EFA993-28F8-4E5D-BF5B-F1A22B9E11E8</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>lastpathcomponent</key>
+				<false/>
+				<key>onlyshowifquerypopulated</key>
+				<false/>
+				<key>removeextension</key>
+				<false/>
+				<key>text</key>
+				<string></string>
+				<key>title</key>
+				<string>Password {query} generated</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.notification</string>
+			<key>uid</key>
+			<string>C810761B-0CF1-4BED-9476-D3431F5D708E</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+	</array>
+	<key>readme</key>
+	<string></string>
+	<key>uidata</key>
+	<dict>
+		<key>06EFA993-28F8-4E5D-BF5B-F1A22B9E11E8</key>
+		<dict>
+			<key>xpos</key>
+			<real>50</real>
+			<key>ypos</key>
+			<real>340</real>
+		</dict>
+		<key>3BD983B0-971F-4537-B78B-DB712BD9125A</key>
+		<dict>
+			<key>xpos</key>
+			<real>480</real>
+			<key>ypos</key>
+			<real>340</real>
+		</dict>
+		<key>C810761B-0CF1-4BED-9476-D3431F5D708E</key>
+		<dict>
+			<key>xpos</key>
+			<real>700</real>
+			<key>ypos</key>
+			<real>345</real>
+		</dict>
+		<key>CA6B2F5F-B5BB-45E0-B9E4-B6A9660CEC0E</key>
+		<dict>
+			<key>xpos</key>
+			<real>270</real>
+			<key>ypos</key>
+			<real>340</real>
+		</dict>
+	</dict>
+	<key>userconfigurationconfig</key>
+	<array/>
+	<key>webaddress</key>
+	<string></string>
+</dict>
+</plist>

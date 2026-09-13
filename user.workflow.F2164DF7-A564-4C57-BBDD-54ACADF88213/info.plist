@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>bundleid</key>
+	<string></string>
+	<key>connections</key>
+	<dict>
+		<key>8A2305FB-927C-4E94-B124-2DC22A8A4588</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>686DB296-7519-466F-956E-CE11D9F21258</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>DFE0B980-3879-4733-880B-18DEF8FC74E1</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>8A2305FB-927C-4E94-B124-2DC22A8A4588</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+	</dict>
+	<key>createdby</key>
+	<string>Christian Saborio</string>
+	<key>description</key>
+	<string></string>
+	<key>disabled</key>
+	<false/>
+	<key>name</key>
+	<string>Clipboard Text Tools</string>
+	<key>objects</key>
+	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>lastpathcomponent</key>
+				<false/>
+				<key>onlyshowifquerypopulated</key>
+				<false/>
+				<key>removeextension</key>
+				<false/>
+				<key>text</key>
+				<string></string>
+				<key>title</key>
+				<string>Text transformed: {query}</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.notification</string>
+			<key>uid</key>
+			<string>686DB296-7519-466F-956E-CE11D9F21258</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argumenttype</key>
+				<integer>0</integer>
+				<key>keyword</key>
+				<string>phil</string>
+				<key>subtext</key>
+				<string>Usage: Phil [upper | lower | snake | spinal | space | sentence | camel]</string>
+				<key>text</key>
+				<string>Transform Clipboard Text</string>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.keyword</string>
+			<key>uid</key>
+			<string>DFE0B980-3879-4733-880B-18DEF8FC74E1</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>68</integer>
+				<key>script</key>
+				<string>import sys
+import subprocess
+import re
+
+def get_clipboard():
+    """Reads content from the macOS clipboard."""
+    return subprocess.check_output(['pbpaste'], text=True)
+
+def set_clipboard(text):
+    """Writes content to the macOS clipboard."""
+    process = subprocess.Popen(['pbcopy'], stdin=subprocess.PIPE)
+    process.communicate(input=text.encode('utf-8'))
+    return text
+
+def to_sentence_case(text):
+    """Converts a block of text to sentence case."""
+    sentences = re.split(r'([.!?]\s*)', text)
+    output = []
+    for i, sentence in enumerate(sentences):
+        if i % 2 == 0 and sentence.strip():
+            output.append(sentence.strip().capitalize())
+        else:
+            output.append(sentence)
+    return "".join(output)
+
+def to_camel_case(text):
+    """Converts a string to camelCase."""
+    parts = re.split(r'[\s_-]+', text)
+    if not parts:
+        return ""
+    return parts[0].lower() + "".join(word.capitalize() for word in parts[1:])
+
+def to_cap_case(text):
+    """Capitalises each word and removes dashes/underscores."""
+    parts = re.split(r'[\s_-]+', text.strip())
+    return " ".join(word.capitalize() for word in parts if word)
+
+# The command is passed from Alfred
+command = sys.argv[1].lower()
+
+# Read the initial content from the clipboard
+original_text = get_clipboard()
+transformed_text = ""
+
+# --- Main Logic ---
+if command == 'upper':
+    transformed_text = original_text.upper()
+elif command == 'lower':
+    transformed_text = original_text.lower()
+elif command == 'snake':
+    transformed_text = original_text.replace(' ', '_')
+elif command == 'spinal':
+    transformed_text = original_text.replace(' ', '-')
+elif command == 'space':
+    transformed_text = original_text.replace('_', ' ').replace('-', ' ')
+elif command in ('lower-spinal', 'kebab-lower', 'slug'):
+    transformed_text = re.sub(r'\s+', '-', original_text.strip().lower())
+elif command == 'sentence' or command == 'sentences case':
+    transformed_text = to_sentence_case(original_text)
+elif command == 'camel':
+    transformed_text = to_camel_case(original_text)
+elif command == 'cap':
+    transformed_text = to_cap_case(original_text)
+else:
+    transformed_text = "Error: Unknown command."
+
+# Update the clipboard with the new text
+set_clipboard(transformed_text)
+
+# Pass the command name to the notification
+print(f"'{command.capitalize()}' case applied.")</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>type</key>
+				<integer>9</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>8A2305FB-927C-4E94-B124-2DC22A8A4588</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+	</array>
+	<key>readme</key>
+	<string></string>
+	<key>uidata</key>
+	<dict>
+		<key>686DB296-7519-466F-956E-CE11D9F21258</key>
+		<dict>
+			<key>xpos</key>
+			<real>590</real>
+			<key>ypos</key>
+			<real>275</real>
+		</dict>
+		<key>8A2305FB-927C-4E94-B124-2DC22A8A4588</key>
+		<dict>
+			<key>xpos</key>
+			<real>365</real>
+			<key>ypos</key>
+			<real>275</real>
+		</dict>
+		<key>DFE0B980-3879-4733-880B-18DEF8FC74E1</key>
+		<dict>
+			<key>xpos</key>
+			<real>140</real>
+			<key>ypos</key>
+			<real>275</real>
+		</dict>
+	</dict>
+	<key>userconfigurationconfig</key>
+	<array/>
+	<key>webaddress</key>
+	<string></string>
+</dict>
+</plist>

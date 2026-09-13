@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>bundleid</key>
+	<string></string>
+	<key>category</key>
+	<string>Tools</string>
+	<key>connections</key>
+	<dict>
+		<key>music-browser</key>
+		<array>
+			<dict>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+				<key>destinationuid</key>
+				<string>open-music-folder</string>
+			</dict>
+		</array>
+	</dict>
+	<key>createdby</key>
+	<string>Christian Saborio</string>
+	<key>description</key>
+	<string>Browses the music folder for Music App</string>
+	<key>disabled</key>
+	<false/>
+	<key>name</key>
+	<string>Music Browser</string>
+	<key>objects</key>
+	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>alfredfiltersresults</key>
+				<false/>
+				<key>alfredfiltersresultsmatchmode</key>
+				<integer>0</integer>
+				<key>argumenttreatemptyqueryasnil</key>
+				<false/>
+				<key>argumenttrimmode</key>
+				<integer>0</integer>
+				<key>argumenttype</key>
+				<integer>1</integer>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>keyword</key>
+				<string>music</string>
+				<key>queuedelaycustom</key>
+				<integer>3</integer>
+				<key>queuedelayimmediatelyinitially</key>
+				<true/>
+				<key>queuedelaymode</key>
+				<integer>0</integer>
+				<key>queuemode</key>
+				<integer>1</integer>
+				<key>runningsubtext</key>
+				<string></string>
+				<key>script</key>
+				<string>#!/usr/bin/python3
+import json
+import os
+import subprocess
+import sys
+from urllib.parse import unquote, urlparse
+from pathlib import Path
+
+def artist_roots(media_path):
+    # Media containers vary between Music and older iTunes libraries.
+    for container in (media_path, media_path / "Media.localized", media_path / "Media",
+                      media_path / "iTunes Media", media_path / "iTunes Music"):
+        roots = [path for path in (container / "Apple Music", container / "Music")
+                 if path.is_dir()]
+        if roots:
+            return roots
+    return []
+
+def preference_path(key):
+    try:
+        value = subprocess.check_output(
+            ["/usr/bin/defaults", "read", "com.apple.Music", key],
+            text=True, stderr=subprocess.DEVNULL, timeout=2,
+        ).strip()
+        parsed = urlparse(value)
+        if parsed.scheme == "file" and parsed.path:
+            return Path(unquote(parsed.path))
+    except (OSError, subprocess.SubprocessError, ValueError):
+        pass
+    return None
+
+def music_roots():
+    configured = preference_path("media-folder-url")
+    if configured is not None:
+        roots = artist_roots(configured)
+        if roots:
+            return roots
+        # A configured media location may itself contain artists directly.
+        if configured.is_dir():
+            return [configured]
+
+    candidates = []
+    library = preference_path("library-url")
+    if library is not None:
+        candidates.extend([library.parent / "Media.localized", library.parent / "Media"])
+    candidates.extend([
+        Path.home() / "Music" / "Music" / "Media.localized",
+        Path.home() / "Music" / "iTunes",
+    ])
+    try:
+        volumes = sorted(path for path in Path("/Volumes").iterdir()
+                         if not path.name.startswith(".") and path.is_dir())
+    except OSError:
+        volumes = []
+    for volume in volumes:
+        # Preserve the relative location when only the volume name changed.
+        if configured is not None and configured.parts[:2] == ("/", "Volumes"):
+            candidates.append(volume.joinpath(*configured.parts[3:]))
+        candidates.extend(volume / name for name in
+                          ("iTunes", "Music", "Music/iTunes", "Music/Music", "iTunes Media"))
+
+    found = []
+    seen = set()
+    for candidate in candidates:
+        for root in artist_roots(candidate):
+            resolved = root.resolve()
+            if resolved not in seen:
+                seen.add(resolved)
+                found.append(root)
+    return found
+
+roots = music_roots()
+query = (sys.argv[1] if len(sys.argv) &gt; 1 else "").strip().strip("/")
+currents = []
+if "/" in query:
+    for root in roots:
+        candidate = (root / query).resolve()
+        try:
+            candidate.relative_to(root.resolve())
+        except ValueError:
+            continue
+        if candidate.is_dir():
+            currents.append(candidate)
+search = "" if currents else query
+currents = currents or roots
+
+def matches(name, term):
+	name = name.casefold()
+	term = term.casefold().strip()
+	if not term:
+		return True
+	if term in name:
+		return True
+	position = 0
+	for character in term:
+		position = name.find(character, position)
+		if position == -1:
+			return False
+		position += 1
+	return True
+
+items = []
+folders = []
+errors = []
+for current in currents:
+    try:
+        folders.extend(path for path in current.iterdir()
+                       if path.is_dir() and not path.name.startswith(".")
+                       and not path.name.endswith(".localized")
+                       and matches(path.name, search))
+    except OSError as error:
+        errors.append((current, error))
+
+for folder in sorted(folders, key=lambda path: (path.name.casefold(), str(path))):
+    items.append({
+        "uid": "music-" + str(folder),
+        "title": folder.name,
+        "subtitle": str(folder),
+        "arg": str(folder)
+    })
+
+for current, error in errors:
+    items.append({
+        "title": "Cannot read music folder",
+        "subtitle": str(current) + ": " + str(error),
+        "valid": False
+    })
+
+if not items:
+    items.append({
+        "title": "No matching folders" if roots else "Music folder unavailable",
+        "subtitle": "No folders matching " + (search or "this location") + " in " + ", ".join(map(str, currents)) if roots else "Connect your music drive or choose its media folder in Music → Settings → Files.",
+        "valid": False
+    })
+
+print(json.dumps({"items": items}))
+</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>subtext</key>
+				<string>Browse folders in your music library</string>
+				<key>title</key>
+				<string>Music folder</string>
+				<key>type</key>
+				<integer>9</integer>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>music-browser</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>path</key>
+				<string>{query}</string>
+				<key>sortBy</key>
+				<integer>2</integer>
+				<key>sortDirection</key>
+				<integer>0</integer>
+				<key>sortFoldersAtTop</key>
+				<false/>
+				<key>sortOverride</key>
+				<true/>
+				<key>stackBrowserView</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.browseinalfred</string>
+			<key>uid</key>
+			<string>open-music-folder</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+	</array>
+	<key>readme</key>
+	<string></string>
+	<key>uidata</key>
+	<dict/>
+	<key>userconfigurationconfig</key>
+	<array/>
+	<key>version</key>
+	<string></string>
+	<key>webaddress</key>
+	<string></string>
+</dict>
+</plist>

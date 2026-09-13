@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>bundleid</key>
+	<string></string>
+	<key>category</key>
+	<string>Productivity</string>
+	<key>connections</key>
+	<dict>
+		<key>A84EC02B-2938-4480-A173-6C7C430388DD</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>32B9BF54-FB44-4761-89E5-E17B7D9BB7D6</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>F4D5A4B8-6A3F-4D30-9A7A-5E5E2B8F5B67</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>9E0C9D2E-7C1B-4D0D-9D5A-4B7F1A2C8E36</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+	</dict>
+	<key>createdby</key>
+	<string>Christian Saborio</string>
+	<key>description</key>
+	<string>Navigates frequently used folders</string>
+	<key>disabled</key>
+	<false/>
+	<key>name</key>
+	<string>Favourite Folders</string>
+	<key>objects</key>
+	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>path</key>
+				<string>{query}</string>
+				<key>sortBy</key>
+				<integer>2</integer>
+				<key>sortDirection</key>
+				<integer>0</integer>
+				<key>sortFoldersAtTop</key>
+				<false/>
+				<key>sortOverride</key>
+				<true/>
+				<key>stackBrowserView</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.browseinalfred</string>
+			<key>uid</key>
+			<string>32B9BF54-FB44-4761-89E5-E17B7D9BB7D6</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>alfredfiltersresults</key>
+				<false/>
+				<key>alfredfiltersresultsmatchmode</key>
+				<integer>0</integer>
+				<key>argumenttreatemptyqueryasnil</key>
+				<true/>
+				<key>argumenttrimmode</key>
+				<integer>0</integer>
+				<key>argumenttype</key>
+				<integer>0</integer>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>keyword</key>
+				<string>fav</string>
+				<key>queuedelaycustom</key>
+				<integer>3</integer>
+				<key>queuedelayimmediatelyinitially</key>
+				<true/>
+				<key>queuedelaymode</key>
+				<integer>0</integer>
+				<key>queuemode</key>
+				<integer>1</integer>
+				<key>runningsubtext</key>
+				<string></string>
+				<key>script</key>
+				<string>import sys
+import os
+import json
+
+def main():
+    query = sys.argv[1] if len(sys.argv) &gt; 1 else ""
+    parts = query.split()
+    shortcut = parts[0] if parts else ""
+    # This is the text we will use to filter the results
+    subfolder_filter = parts[1] if len(parts) &gt; 1 else ""
+
+    config_file = "/Users/csaborio/Library/CloudStorage/OneDrive-Personal/Application Settings/Alfred/Alfred.alfredpreferences/workflows/user.workflow.B5A1A856-928B-4CC0-AC6D-932FC355D213/fav_folders.txt"
+    base_path = ""
+    results = []
+    direct_path = os.path.expanduser(query.strip())
+
+    if os.path.isdir(direct_path):
+        base_path = direct_path
+
+    if not base_path:
+        try:
+            with open(config_file, 'r', encoding='utf-8') as f:
+                for line in f:
+                    if line.strip().startswith(shortcut + ' '):
+                        line_parts = line.strip().split(' ', 1)
+                        if len(line_parts) &gt; 1:
+                            base_path = line_parts[1]
+                            break
+        except Exception:
+            pass
+
+    if not base_path:
+        results.append({"title": "Invalid Shortcut", "subtitle": f"Shortcut '{shortcut}' not found.", "valid": False})
+        print(json.dumps({"items": results}))
+        return
+
+    try:
+        # The search path should ONLY be the expanded base path
+        search_path = os.path.expanduser(base_path)
+
+        if os.path.isdir(search_path):
+            for item in os.listdir(search_path):
+                full_item_path = os.path.join(search_path, item)
+                # THE FIX: Filter results here instead of changing the search path
+                if os.path.isdir(full_item_path) and item.lower().startswith(subfolder_filter.lower()):
+                    results.append({
+                        "title": item,
+                        "subtitle": full_item_path,
+                        "arg": full_item_path,
+                        "type": "file",
+                        "uid": full_item_path
+                    })
+    except Exception as e:
+        results.append({"title": "Error", "subtitle": str(e), "valid": False})
+
+    # If nothing was found after filtering, show a "not found" message
+    if not results and subfolder_filter:
+         results.append({
+            "title": f"No folders found matching '{subfolder_filter}'",
+            "subtitle": f"In: {search_path}",
+            "valid": False
+        })
+
+    print(json.dumps({"items": results}))
+
+if __name__ == "__main__":
+    main()</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>subtext</key>
+				<string>Searching for matching folders...</string>
+				<key>title</key>
+				<string>Maps to a Favorite Folder</string>
+				<key>type</key>
+				<integer>9</integer>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>A84EC02B-2938-4480-A173-6C7C430388DD</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>acceptsmulti</key>
+				<integer>1</integer>
+				<key>filetypes</key>
+				<array>
+					<string>+public.folder</string>
+				</array>
+				<key>name</key>
+				<string>Add to Favourite Folders</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.trigger.action</string>
+			<key>uid</key>
+			<string>F4D5A4B8-6A3F-4D30-9A7A-5E5E2B8F5B67</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>68</integer>
+				<key>script</key>
+				<string>on run argv
+	if (count of argv) is 0 then return
+
+	set folderPath to item 1 of argv
+	set configFile to "/Users/csaborio/Library/CloudStorage/OneDrive-Personal/Application Settings/Alfred/Alfred.alfredpreferences/workflows/user.workflow.B5A1A856-928B-4CC0-AC6D-932FC355D213/fav_folders.txt"
+	set promptResult to display dialog "Nickname for this folder:" default answer "" buttons {"Cancel", "Save"} default button "Save" cancel button "Cancel"
+	set nickname to text returned of promptResult
+
+	if nickname is "" then return
+
+	do shell script "/usr/bin/printf '%s %s\\n' " &amp; quoted form of nickname &amp; " " &amp; quoted form of folderPath &amp; " &gt;&gt; " &amp; quoted form of configFile
+	display notification "Added " &amp; nickname &amp; " to Favourite Folders" with title "Favourite Folders"
+end run</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>type</key>
+				<integer>6</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>9E0C9D2E-7C1B-4D0D-9D5A-4B7F1A2C8E36</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+	</array>
+	<key>readme</key>
+	<string></string>
+	<key>uidata</key>
+	<dict>
+		<key>32B9BF54-FB44-4761-89E5-E17B7D9BB7D6</key>
+		<dict>
+			<key>xpos</key>
+			<real>410</real>
+			<key>ypos</key>
+			<real>175</real>
+		</dict>
+		<key>A84EC02B-2938-4480-A173-6C7C430388DD</key>
+		<dict>
+			<key>xpos</key>
+			<real>195</real>
+			<key>ypos</key>
+			<real>175</real>
+		</dict>
+		<key>F4D5A4B8-6A3F-4D30-9A7A-5E5E2B8F5B67</key>
+		<dict>
+			<key>xpos</key>
+			<real>195</real>
+			<key>ypos</key>
+			<real>325</real>
+		</dict>
+		<key>9E0C9D2E-7C1B-4D0D-9D5A-4B7F1A2C8E36</key>
+		<dict>
+			<key>xpos</key>
+			<real>410</real>
+			<key>ypos</key>
+			<real>325</real>
+		</dict>
+	</dict>
+	<key>userconfigurationconfig</key>
+	<array/>
+	<key>webaddress</key>
+	<string></string>
+</dict>
+</plist>

@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>bundleid</key>
+	<string></string>
+	<key>connections</key>
+	<dict>
+		<key>2EFDB3A8-10EF-4418-A9E2-ED5FBB727417</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>C5F0FD17-7AFC-46BE-97AF-1FE784B73D5D</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>C5F0FD17-7AFC-46BE-97AF-1FE784B73D5D</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>6DBEB68C-7292-430B-829E-9F0D84E03CEE</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+	</dict>
+	<key>createdby</key>
+	<string></string>
+	<key>description</key>
+	<string></string>
+	<key>disabled</key>
+	<false/>
+	<key>name</key>
+	<string>Clipboard Image to OneDrive</string>
+	<key>objects</key>
+	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argumenttype</key>
+				<integer>2</integer>
+				<key>keyword</key>
+				<string>ou</string>
+				<key>subtext</key>
+				<string></string>
+				<key>text</key>
+				<string>Upload Clipboard to OneDrive</string>
+				<key>withspace</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.keyword</string>
+			<key>uid</key>
+			<string>2EFDB3A8-10EF-4418-A9E2-ED5FBB727417</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>script</key>
+				<string>#!/bin/bash
+
+set -e
+
+TMP_DIR="${TMPDIR:-/tmp}"
+STAMP=$(date +"%Y-%m-%d_%H-%M-%S")
+FILENAME="clipboard-${STAMP}.png"
+LOCAL_FILE="${TMP_DIR}${FILENAME}"
+REMOTE_DIR="RaycastUploads"
+REMOTE_PATH="${REMOTE_DIR}/${FILENAME}"
+
+# Save clipboard image to a PNG file
+osascript -e '
+set theImage to the clipboard as «class PNGf»
+set outFile to POSIX file "'"$LOCAL_FILE"'"
+try
+	set fileRef to open for access outFile with write permission
+	set eof fileRef to 0
+	write theImage to fileRef
+	close access fileRef
+on error errMsg number errNum
+	try
+		close access outFile
+	end try
+	error errMsg number errNum
+end try
+'
+
+if [ ! -f "$LOCAL_FILE" ]; then
+  echo "No image found on clipboard"
+  exit 1
+fi
+
+# Upload to OneDrive
+rclone copy "$LOCAL_FILE" "onedrive:${REMOTE_DIR}"
+
+# Create public link
+LINK=$(rclone link "onedrive:${REMOTE_PATH}")
+
+# Copy link to clipboard
+printf "%s" "$LINK" | pbcopy
+
+# Return link for Alfred output
+echo "$LINK"</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>type</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>C5F0FD17-7AFC-46BE-97AF-1FE784B73D5D</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>lastpathcomponent</key>
+				<false/>
+				<key>onlyshowifquerypopulated</key>
+				<false/>
+				<key>removeextension</key>
+				<false/>
+				<key>text</key>
+				<string></string>
+				<key>title</key>
+				<string>Link Read {query}</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.notification</string>
+			<key>uid</key>
+			<string>6DBEB68C-7292-430B-829E-9F0D84E03CEE</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+	</array>
+	<key>readme</key>
+	<string></string>
+	<key>uidata</key>
+	<dict>
+		<key>2EFDB3A8-10EF-4418-A9E2-ED5FBB727417</key>
+		<dict>
+			<key>xpos</key>
+			<real>210</real>
+			<key>ypos</key>
+			<real>65</real>
+		</dict>
+		<key>6DBEB68C-7292-430B-829E-9F0D84E03CEE</key>
+		<dict>
+			<key>xpos</key>
+			<real>220</real>
+			<key>ypos</key>
+			<real>435</real>
+		</dict>
+		<key>C5F0FD17-7AFC-46BE-97AF-1FE784B73D5D</key>
+		<dict>
+			<key>xpos</key>
+			<real>215</real>
+			<key>ypos</key>
+			<real>240</real>
+		</dict>
+	</dict>
+	<key>userconfigurationconfig</key>
+	<array/>
+	<key>webaddress</key>
+	<string></string>
+</dict>
+</plist>

@@ -1,0 +1,9 @@
+down ~/Downloads
+sites ~/Websites
+st /Users/csaborio/Library/CloudStorage/OneDrive-Personal/ScorpioTek
+act /Users/csaborio/Library/CloudStorage/OneDrive-Personal/ScorpioTek/ScorpioTek Projects/Active
+torr /Volumes/MediaTemp/Torrents
+tv /Volumes/LoloMedia/Media for TV
+wp /Users/csaborio/Library/CloudStorage/OneDrive-Personal/ScorpioTek/WordPress/WordPressPlugins
+st /Users/csaborio/Library/CloudStorage/OneDrive-Personal/ScorpioTek
+pl /Users/csaborio/Library/CloudStorage/OneDrive-Personal/ScorpioTek/WordPressPlugins
