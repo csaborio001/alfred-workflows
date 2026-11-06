@@ -304,3 +304,4 @@ The main machine-specific items visible in this collection are:
 
 If a workflow shows no results, open its debugger in Alfred, run its trigger, and inspect the error output. Check that the edited workflow has synced, its paths exist, and its dependencies are available to Alfred.
 -Replace workflows with current local snapshot
+-Added script syncing feature
