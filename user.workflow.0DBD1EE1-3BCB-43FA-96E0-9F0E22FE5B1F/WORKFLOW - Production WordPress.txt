@@ -1,0 +1,9 @@
+Production WordPress
+====================
+
+Folder: user.workflow.0DBD1EE1-3BCB-43FA-96E0-9F0E22FE5B1F
+Bundle ID: (not set)
+Keywords: (none; uses other triggers)
+Description: (not provided)
+
+Identification only. Workflow configuration is stored in info.plist.

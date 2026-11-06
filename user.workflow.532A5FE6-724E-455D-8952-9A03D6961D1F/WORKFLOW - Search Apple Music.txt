@@ -1,0 +1,9 @@
+Search Apple Music
+==================
+
+Folder: user.workflow.532A5FE6-724E-455D-8952-9A03D6961D1F
+Bundle ID: (not set)
+Keywords: amen
+Description: (not provided)
+
+Identification only. Workflow configuration is stored in info.plist.

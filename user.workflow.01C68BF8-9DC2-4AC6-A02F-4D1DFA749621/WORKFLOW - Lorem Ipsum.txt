@@ -1,0 +1,9 @@
+Lorem Ipsum
+===========
+
+Folder: user.workflow.01C68BF8-9DC2-4AC6-A02F-4D1DFA749621
+Bundle ID: (not set)
+Keywords: li
+Description: Generate lorem ipsum paragraphs, sentences, or words with li.
+
+Identification only. Workflow configuration is stored in info.plist.

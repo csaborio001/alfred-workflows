@@ -1,0 +1,9 @@
+Dash
+====
+
+Folder: user.workflow.994AB772-BE07-4280-80C6-ECA9E5127440
+Bundle ID: com.kapeli.dash.workflow
+Keywords: dash, wordpress
+Description: Search Dash for query
+
+Identification only. Workflow configuration is stored in info.plist.

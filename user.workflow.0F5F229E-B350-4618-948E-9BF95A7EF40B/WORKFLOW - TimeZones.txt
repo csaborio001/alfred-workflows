@@ -1,0 +1,9 @@
+TimeZones
+=========
+
+Folder: user.workflow.0F5F229E-B350-4618-948E-9BF95A7EF40B
+Bundle ID: carlosnz.timezones2
+Keywords: tz, timezone add, timezone date on, timezone move, timezone date off, timezone 24h, timezone 12h, timezone both, timezone sort off, timezone sort on, timezone edit
+Description: A World Clock for Alfred
+
+Identification only. Workflow configuration is stored in info.plist.

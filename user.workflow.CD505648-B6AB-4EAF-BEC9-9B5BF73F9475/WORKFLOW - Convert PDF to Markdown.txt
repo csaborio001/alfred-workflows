@@ -1,0 +1,9 @@
+Convert PDF to Markdown
+=======================
+
+Folder: user.workflow.CD505648-B6AB-4EAF-BEC9-9B5BF73F9475
+Bundle ID: (not set)
+Keywords: (none; uses other triggers)
+Description: (not provided)
+
+Identification only. Workflow configuration is stored in info.plist.

@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>bundleid</key>
+	<string>org.csaborio.alfred.mail-navigator</string>
+	<key>category</key>
+	<string>Productivity</string>
+	<key>name</key>
+	<string>Apple Mail Navigator</string>
+	<key>createdby</key>
+	<string>Christian Saborio</string>
+	<key>description</key>
+	<string>Find and open Apple Mail mailboxes across accounts.</string>
+	<key>disabled</key>
+	<false/>
+	<key>version</key>
+	<string>1.0.0</string>
+	<key>webaddress</key>
+	<string></string>
+	<key>objects</key>
+	<array>
+		<dict>
+			<key>uid</key>
+			<string>mail-list</string>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>config</key>
+			<dict>
+				<key>keyword</key>
+				<string>mail</string>
+				<key>withspace</key>
+				<true/>
+				<key>argumenttype</key>
+				<integer>1</integer>
+				<key>argumenttreatemptyqueryasnil</key>
+				<false/>
+				<key>argumenttrimmode</key>
+				<integer>0</integer>
+				<key>alfredfiltersresults</key>
+				<false/>
+				<key>alfredfiltersresultsmatchmode</key>
+				<integer>0</integer>
+				<key>queuedelaycustom</key>
+				<integer>1</integer>
+				<key>queuedelayimmediatelyinitially</key>
+				<true/>
+				<key>queuedelaymode</key>
+				<integer>0</integer>
+				<key>queuemode</key>
+				<integer>1</integer>
+				<key>title</key>
+				<string>Navigate Apple Mail</string>
+				<key>subtext</key>
+				<string>Search mailboxes by name, account, or path</string>
+				<key>runningsubtext</key>
+				<string>Finding mailboxes…</string>
+				<key>script</key>
+				<string>/usr/bin/python3 -B scripts/navigator.py list "$@"</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>type</key>
+				<integer>0</integer>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>concurrently</key>
+				<false/>
+			</dict>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
+		<dict>
+			<key>uid</key>
+			<string>mail-action</string>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>config</key>
+			<dict>
+				<key>script</key>
+				<string>/usr/bin/python3 -B scripts/navigator.py action "$@"</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>type</key>
+				<integer>0</integer>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>concurrently</key>
+				<false/>
+			</dict>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+		<dict>
+			<key>uid</key>
+			<string>mail-copy</string>
+			<key>type</key>
+			<string>alfred.workflow.output.clipboard</string>
+			<key>config</key>
+			<dict>
+				<key>autopaste</key>
+				<false/>
+				<key>clipboardtext</key>
+				<string>{query}</string>
+				<key>ignoredynamicplaceholders</key>
+				<true/>
+				<key>transient</key>
+				<false/>
+			</dict>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
+		<dict>
+			<key>uid</key>
+			<string>mail-hotkey</string>
+			<key>type</key>
+			<string>alfred.workflow.trigger.hotkey</string>
+			<key>config</key>
+			<dict>
+				<key>action</key>
+				<integer>0</integer>
+				<key>argument</key>
+				<integer>0</integer>
+				<key>focusedappvariable</key>
+				<false/>
+				<key>focusedappvariablename</key>
+				<string></string>
+				<key>leftcursor</key>
+				<false/>
+				<key>modsmode</key>
+				<integer>0</integer>
+				<key>relatedAppsMode</key>
+				<integer>0</integer>
+			</dict>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+		<dict>
+			<key>uid</key>
+			<string>mail-show</string>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>config</key>
+			<dict>
+				<key>script</key>
+				<string>/usr/bin/python3 -B scripts/navigator.py show</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>type</key>
+				<integer>0</integer>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>concurrently</key>
+				<false/>
+			</dict>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+	</array>
+	<key>connections</key>
+	<dict>
+		<key>mail-list</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>mail-action</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>mail-copy</string>
+				<key>modifiers</key>
+				<integer>1048576</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>mail-hotkey</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>mail-show</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+	</dict>
+	<key>uidata</key>
+	<dict>
+		<key>mail-list</key>
+		<dict>
+			<key>xpos</key>
+			<integer>100</integer>
+			<key>ypos</key>
+			<integer>100</integer>
+		</dict>
+		<key>mail-action</key>
+		<dict>
+			<key>xpos</key>
+			<integer>400</integer>
+			<key>ypos</key>
+			<integer>100</integer>
+		</dict>
+		<key>mail-copy</key>
+		<dict>
+			<key>xpos</key>
+			<integer>400</integer>
+			<key>ypos</key>
+			<integer>260</integer>
+		</dict>
+		<key>mail-hotkey</key>
+		<dict>
+			<key>xpos</key>
+			<integer>100</integer>
+			<key>ypos</key>
+			<integer>420</integer>
+		</dict>
+		<key>mail-show</key>
+		<dict>
+			<key>xpos</key>
+			<integer>400</integer>
+			<key>ypos</key>
+			<integer>420</integer>
+		</dict>
+	</dict>
+	<key>userconfigurationconfig</key>
+	<array/>
+	<key>readme</key>
+	<string># Apple Mail Navigator
+
+Type `mail` in Alfred, then a mailbox name, account, or path. Examples:
+`mail sen`, `mail work arch`, `mail active proj`, `mail saborio inbox`.
+
+- Return: activate Mail and select the mailbox; clear message selection.
+- Command-Return: copy the account and mailbox path without navigating.
+- `mail :refresh`: refresh discovery in the background.
+- `mail :clear`: clear recent/frequent navigation history.
+- Optional hotkey: assign the unbound Hotkey object in Alfred Preferences →
+  Workflows → Apple Mail Navigator. No existing shortcut is replaced.
+
+## Navigation
+
+Uses the installed Mail scripting dictionary's writable `selected mailboxes`
+property on a message viewer. Resolves accounts by account ID, and mailboxes by
+full account-relative path, rather than display name or row number. Checks the
+selected mailbox reference after assignment; Mail may update asynchronously.
+Creates a message viewer when none exists. Launches/activates Mail as needed.
+No message content is queried; no send, delete, move, read-status, or account
+settings commands are issued. Mail itself can restore a previously selected
+message while changing mailboxes; selection is cleared before and after navigation.
+No Accessibility, screen recording, mouse coordinates, or undocumented URLs are
+required. Message-list keyboard focus is left to Mail because its scripting API
+does not provide a reliable focus control.
+
+## Discovery and matching
+
+Includes account and local mailboxes, nested paths, and unified Inbox, Sent,
+Drafts, Junk, and Trash. Smart mailboxes, Flagged, unified Archive, and Option-Return
+sidebar reveal are deliberately omitted: a reliable supported implementation has
+not been verified. Individual Archive mailboxes are included.
+
+Exact names rank first, then prefixes, word matches, then subsequence fuzzy
+matches. Within each tier, recent visits and frequency rank next. Case and
+combining diacritics are ignored. Shorter matching names break ties, so `sen`
+prefers Sent over SendLater. Empty search shows recent choices first, with unified
+mailboxes as the initial defaults. IDs derive from account ID and full path;
+renaming a mailbox changes its ID and resets its individual history.
+
+## Cache and permissions
+
+Only Python 3 standard library and macOS osascript are used. Verified interpreter:
+`/usr/bin/python3` (3.9.6). No downloads. Alfred supplies workflow cache and data
+paths; standalone commands fall back to `~/Library/Caches/org.csaborio.alfred.mail-navigator`
+and `~/Library/Application Support/Alfred/Workflow Data/org.csaborio.alfred.mail-navigator`.
+Runtime data is never written into this iCloud workflow folder. JSON writes use
+atomic replacement; refresh uses an exclusive lock. Metadata refreshes after 15
+minutes when invoked, or on explicit refresh. Ordinary filtering only reads cache;
+background discovery is bounded to 60 seconds and may take tens of seconds.
+Cached listings remain available during refresh. Cold startup displays discovery
+status and reruns until results arrive. Failed refreshes retain the old cache and
+show an actionable error. Offline accounts use Mail's locally exposed metadata;
+account network behavior is controlled by Mail.
+
+Allow Alfred to control Mail if macOS asks. For a denied prompt, open System
+Settings → Privacy &amp; Security → Automation → Alfred → Mail, then `mail :refresh`.
+Alfred already has permission to handle its clipboard output. The optional hotkey
+and error redisplay use Alfred's own scripting API. Accessibility and screen
+recording are not workflow requirements.
+
+## Troubleshooting
+
+- Missing/renamed folder: open Mail, wait for accounts to load, then `mail :refresh`.
+- Automation timeout: retry after Mail finishes launching or syncing.
+- A failed navigation reopens Alfred with the error; use the refresh result.
+- No results: check spelling or use an account name; `mail :` shows maintenance.
+- After a macOS update, refresh and re-test navigation. This version was tested
+  against macOS 27.2 build 26B123 and Alfred 5.8.1 on Apple silicon.
+- To reset everything, remove only this workflow's cache/data directories.
+- Run tests: `/usr/bin/python3 -B tests/test_navigator.py` from this folder.
+
+## Validation performed on 6 November 2026
+
+- Inspected existing workflows, active iCloud preferences, keyword configuration,
+  installed software, and the on-disk Mail scripting dictionary.
+- Discovered 141 entries: 129 account mailboxes over four accounts, seven local
+  mailboxes, five unified mailboxes. All 141 references resolved without errors.
+- Live navigation verified for ScorpioTek Sent, Fastmail Sent, Gmail Sent Mail,
+  nested ScorpioTek/Active Projects, and unified Inbox/Sent/Drafts/Junk/Trash.
+- Alfred discovered the workflow and displayed `mail sen` results.
+- Cached subprocess searches measured about 40–55 ms on this machine.
+- Tested fuzzy/multiword/diacritic matching, duplicate identity, recent ordering,
+  corrupted cache recovery, simulated automation failure, history clearing, JSON,
+  and graph wiring. Actual privacy denial was simulated, not imposed on the user.
+- Did not quit the user's running Mail to test cold launch, disconnect accounts,
+  rename/delete real mailboxes, or alter messages. Cold launch, offline operation,
+  and future macOS versions remain limitations of the live validation.
+- Only the new workflow was installed; existing workflow files were not edited.
+</string>
+</dict>
+</plist>

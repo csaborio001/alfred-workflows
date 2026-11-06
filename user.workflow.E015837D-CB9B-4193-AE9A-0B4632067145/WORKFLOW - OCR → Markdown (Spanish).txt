@@ -1,0 +1,9 @@
+OCR → Markdown (Spanish)
+========================
+
+Folder: user.workflow.E015837D-CB9B-4193-AE9A-0B4632067145
+Bundle ID: (not set)
+Keywords: (none; uses other triggers)
+Description: (not provided)
+
+Identification only. Workflow configuration is stored in info.plist.

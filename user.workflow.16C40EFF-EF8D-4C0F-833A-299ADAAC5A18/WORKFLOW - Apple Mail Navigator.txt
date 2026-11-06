@@ -1,0 +1,9 @@
+Apple Mail Navigator
+====================
+
+Folder: user.workflow.16C40EFF-EF8D-4C0F-833A-299ADAAC5A18
+Bundle ID: org.csaborio.alfred.mail-navigator
+Keywords: mail
+Description: Find and open Apple Mail mailboxes across accounts.
+
+Identification only. Workflow configuration is stored in info.plist.

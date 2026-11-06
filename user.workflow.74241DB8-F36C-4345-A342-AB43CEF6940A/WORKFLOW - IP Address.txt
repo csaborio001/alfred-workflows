@@ -1,0 +1,9 @@
+IP Address
+==========
+
+Folder: user.workflow.74241DB8-F36C-4345-A342-AB43CEF6940A
+Bundle ID: jdfwarrior.getip
+Keywords: ip
+Description: What is my IP address?
+
+Identification only. Workflow configuration is stored in info.plist.

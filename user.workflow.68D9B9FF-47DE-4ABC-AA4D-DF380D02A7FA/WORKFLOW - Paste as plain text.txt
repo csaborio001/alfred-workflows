@@ -1,0 +1,9 @@
+Paste as plain text
+===================
+
+Folder: user.workflow.68D9B9FF-47DE-4ABC-AA4D-DF380D02A7FA
+Bundle ID: (not set)
+Keywords: paste
+Description: (not provided)
+
+Identification only. Workflow configuration is stored in info.plist.

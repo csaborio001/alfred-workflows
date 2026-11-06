@@ -1,0 +1,9 @@
+Mail Link
+=========
+
+Folder: user.workflow.2671E152-06B4-404A-B51E-FE9A3F783622
+Bundle ID: com.sepulchra.alfred.maillink
+Keywords: elink
+Description: Create link to selected message in Apple Mail
+
+Identification only. Workflow configuration is stored in info.plist.

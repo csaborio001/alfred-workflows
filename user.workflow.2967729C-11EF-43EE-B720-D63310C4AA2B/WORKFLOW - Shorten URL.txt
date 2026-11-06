@@ -1,0 +1,9 @@
+Shorten URL
+===========
+
+Folder: user.workflow.2967729C-11EF-43EE-B720-D63310C4AA2B
+Bundle ID: es.nyr.tinyurl
+Keywords: short
+Description: Create a short URL with TinyURL.com
+
+Identification only. Workflow configuration is stored in info.plist.

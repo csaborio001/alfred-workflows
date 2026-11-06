@@ -1,0 +1,9 @@
+Familia
+=======
+
+Folder: user.workflow.6F4DB40E-B9C9-4DC9-A91C-76395EDE09FB
+Bundle ID: (not set)
+Keywords: fm
+Description: (not provided)
+
+Identification only. Workflow configuration is stored in info.plist.

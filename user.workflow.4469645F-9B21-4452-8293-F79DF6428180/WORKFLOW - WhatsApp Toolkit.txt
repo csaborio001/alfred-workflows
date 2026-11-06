@@ -1,0 +1,9 @@
+WhatsApp Toolkit
+================
+
+Folder: user.workflow.4469645F-9B21-4452-8293-F79DF6428180
+Bundle ID: com.alfredapp.gshewakr.whatsapp
+Keywords: wa, trending, explore
+Description: Alfred Toolkit for WhatsApp
+
+Identification only. Workflow configuration is stored in info.plist.

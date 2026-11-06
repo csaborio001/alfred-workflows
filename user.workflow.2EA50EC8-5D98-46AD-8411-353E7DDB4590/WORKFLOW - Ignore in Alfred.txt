@@ -1,0 +1,9 @@
+Ignore in Alfred
+================
+
+Folder: user.workflow.2EA50EC8-5D98-46AD-8411-353E7DDB4590
+Bundle ID: com.alfredapp.vitor.ignoreinalfred
+Keywords: ignore, unignore, reignore, unignore folder
+Description: Exclude files and folders from Alfred’s search results
+
+Identification only. Workflow configuration is stored in info.plist.

@@ -1,0 +1,9 @@
+Clipboard Image to OneDrive
+===========================
+
+Folder: user.workflow.CC3DF341-695E-48F5-BAA8-32B00F268005
+Bundle ID: (not set)
+Keywords: ou
+Description: (not provided)
+
+Identification only. Workflow configuration is stored in info.plist.

@@ -1,0 +1,9 @@
+Nameservers
+===========
+
+Folder: user.workflow.6B5CAF40-E8A0-4C98-B5A9-AE7B6FA861F2
+Bundle ID: (not set)
+Keywords: NS
+Description: Display DNS info of passed domain
+
+Identification only. Workflow configuration is stored in info.plist.

@@ -1,6 +1,6 @@
 # Alfred workflows
 
-Inventory of the 29 workflow folders in this directory, inspected on 14 September 2026. Descriptions follow the saved `info.plist` configuration and bundled source; this is an inventory, not a claim that every workflow has been tested on every Mac.
+Inventory of the 28 workflow folders in this directory, inspected on 14 September 2026. Descriptions follow the saved `info.plist` configuration and bundled source; this is an inventory, not a claim that every workflow has been tested on every Mac.
 
 Each `user.workflow.<UUID>` directory is one workflow. Its readable name, triggers, connections and often its scripts are stored in `info.plist`. Other files can include executable helpers, icons, data, documentation and `prefs.plist` settings.
 
@@ -25,7 +25,6 @@ Type keyword examples into Alfred. A **file action** or **Universal Action** is 
 | Music Browser | [user.workflow.2CCC9C40-19D4-4CA8-A7EE-8BBB8314E269](user.workflow.2CCC9C40-19D4-4CA8-A7EE-8BBB8314E269/) |
 | Nameservers | [user.workflow.6B5CAF40-E8A0-4C98-B5A9-AE7B6FA861F2](user.workflow.6B5CAF40-E8A0-4C98-B5A9-AE7B6FA861F2/) |
 | Notes | [user.workflow.C2B625B3-BA24-430D-8725-23BFDDABA571](user.workflow.C2B625B3-BA24-430D-8725-23BFDDABA571/) |
-| OCR → Markdown (Spanish) | [user.workflow.E015837D-CB9B-4193-AE9A-0B4632067145](user.workflow.E015837D-CB9B-4193-AE9A-0B4632067145/) |
 | Password Generator | [user.workflow.8B2EC50D-87D1-429A-816B-83B58C6BA081](user.workflow.8B2EC50D-87D1-429A-816B-83B58C6BA081/) |
 | Paste as plain text | [user.workflow.68D9B9FF-47DE-4ABC-AA4D-DF380D02A7FA](user.workflow.68D9B9FF-47DE-4ABC-AA4D-DF380D02A7FA/) |
 | Production WordPress | [user.workflow.0DBD1EE1-3BCB-43FA-96E0-9F0E22FE5B1F](user.workflow.0DBD1EE1-3BCB-43FA-96E0-9F0E22FE5B1F/) |
@@ -159,19 +158,16 @@ Folder: [user.workflow.6B5CAF40-E8A0-4C98-B5A9-AE7B6FA861F2](user.workflow.6B5CA
 
 ### Notes
 
+Includes **Markdown from OCR**, migrated from the former OCR → Markdown (Spanish) workflow on 17 September 2026. It accepts selected PDFs and retains the external `~/bin/ocr_md_single.py` helper and `/usr/local/bin/python3` dependency.
+
+Also includes **Convert to Markdown (MarkItDown)** and **Merge Markdown files** file actions. Both accept multiple files and preserve existing outputs with numbered names. See [Notes and Markdown actions](user.workflow.C2B625B3-BA24-430D-8725-23BFDDABA571/README.md) for usage and installation.
+
 Folder: [user.workflow.C2B625B3-BA24-430D-8725-23BFDDABA571](user.workflow.C2B625B3-BA24-430D-8725-23BFDDABA571/)
 
 - **Use:** `md`, `md filename-or-text`.
 - **Behavior:** Lists up to 100 Markdown notes from the configured vault. Searches names/relative paths first; searches contents only when no names match. Opens the selected file and supports Quick Look.
 - **Dependencies / details:** Detects Python 3 in Homebrew Intel/Apple Silicon and other common locations. Configurable `notes_folder`; five-second scan timeout with visible errors.
 
-### OCR → Markdown (Spanish)
-
-Folder: [user.workflow.E015837D-CB9B-4193-AE9A-0B4632067145](user.workflow.E015837D-CB9B-4193-AE9A-0B4632067145/)
-
-- **Use:** PDF file action: **OCR → Markdown (Spanish)**.
-- **Behavior:** Passes selected PDFs to an external OCR script. Its notification says Markdown output is placed in a sibling `_markdown` folder.
-- **Dependencies / details:** Requires `/usr/local/bin/python3` and `~/bin/ocr_md_single.py`, plus that script’s dependencies. OCR behavior and output location were not verified in the external script.
 
 ### Password Generator
 
@@ -307,3 +303,4 @@ The main machine-specific items visible in this collection are:
 - **App integrations:** require their respective installed apps and any macOS automation permissions used by the actions.
 
 If a workflow shows no results, open its debugger in Alfred, run its trigger, and inspect the error output. Check that the edited workflow has synced, its paths exist, and its dependencies are available to Alfred.
+-Replace workflows with current local snapshot

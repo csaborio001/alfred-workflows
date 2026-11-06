@@ -1,0 +1,9 @@
+Notes
+=====
+
+Folder: user.workflow.C2B625B3-BA24-430D-8725-23BFDDABA571
+Bundle ID: (not set)
+Keywords: md
+Description: (not provided)
+
+Identification only. Workflow configuration is stored in info.plist.

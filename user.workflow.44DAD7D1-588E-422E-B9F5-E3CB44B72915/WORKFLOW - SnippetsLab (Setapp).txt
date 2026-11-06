@@ -1,0 +1,9 @@
+SnippetsLab (Setapp)
+====================
+
+Folder: user.workflow.44DAD7D1-588E-422E-B9F5-E3CB44B72915
+Bundle ID: com.renfei.SnippetsLab.AlfredWorkflow
+Keywords: snippet
+Description: Search snippets in SnippetsLab (Setapp)
+
+Identification only. Workflow configuration is stored in info.plist.

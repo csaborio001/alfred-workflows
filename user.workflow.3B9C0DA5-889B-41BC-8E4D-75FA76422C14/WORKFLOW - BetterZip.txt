@@ -1,0 +1,9 @@
+BetterZip
+=========
+
+Folder: user.workflow.3B9C0DA5-889B-41BC-8E4D-75FA76422C14
+Bundle ID: com.macitbetter.betterzip-setapp.alfred
+Keywords: compression presets, extraction presets
+Description: Compress or extract the selection with a BetterZip preset
+
+Identification only. Workflow configuration is stored in info.plist.

@@ -1,0 +1,9 @@
+Upload to OneDrive and Get Link
+===============================
+
+Folder: user.workflow.B2EAF533-DF0E-44D8-8BDD-4CC16B6F0D15
+Bundle ID: (not set)
+Keywords: (none; uses other triggers)
+Description: (not provided)
+
+Identification only. Workflow configuration is stored in info.plist.

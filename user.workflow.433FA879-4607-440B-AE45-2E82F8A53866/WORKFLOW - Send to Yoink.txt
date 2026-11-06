@@ -1,0 +1,9 @@
+Send to Yoink
+=============
+
+Folder: user.workflow.433FA879-4607-440B-AE45-2E82F8A53866
+Bundle ID: at.EternalStorms.YoinkAlfredFileAction
+Keywords: (none; uses other triggers)
+Description: Adds the selected file(s) to Yoink
+
+Identification only. Workflow configuration is stored in info.plist.

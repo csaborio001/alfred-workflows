@@ -1,0 +1,9 @@
+Touch Files with [Date]
+=======================
+
+Folder: user.workflow.8D34269A-B201-4997-91F9-15C6DDABAF1F
+Bundle ID: (not set)
+Keywords: (none; uses other triggers)
+Description: (not provided)
+
+Identification only. Workflow configuration is stored in info.plist.

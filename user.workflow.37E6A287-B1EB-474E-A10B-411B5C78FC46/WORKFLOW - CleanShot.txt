@@ -1,0 +1,9 @@
+CleanShot
+=========
+
+Folder: user.workflow.37E6A287-B1EB-474E-A10B-411B5C78FC46
+Bundle ID: mr.pennyworth.cleanshot
+Keywords: cs
+Description: Trigger CleanShot Actions from Alfred
+
+Identification only. Workflow configuration is stored in info.plist.

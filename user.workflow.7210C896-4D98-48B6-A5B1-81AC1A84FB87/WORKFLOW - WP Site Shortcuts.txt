@@ -1,0 +1,9 @@
+WP Site Shortcuts
+=================
+
+Folder: user.workflow.7210C896-4D98-48B6-A5B1-81AC1A84FB87
+Bundle ID: (not set)
+Keywords: wp, wp-add, wp-del
+Description: (not provided)
+
+Identification only. Workflow configuration is stored in info.plist.

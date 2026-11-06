@@ -1,0 +1,9 @@
+Music Browser
+=============
+
+Folder: user.workflow.2CCC9C40-19D4-4CA8-A7EE-8BBB8314E269
+Bundle ID: (not set)
+Keywords: music
+Description: Browses the music folder for Music App
+
+Identification only. Workflow configuration is stored in info.plist.

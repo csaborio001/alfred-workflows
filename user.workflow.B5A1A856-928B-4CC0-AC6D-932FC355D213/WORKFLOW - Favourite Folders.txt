@@ -1,0 +1,9 @@
+Favourite Folders
+=================
+
+Folder: user.workflow.B5A1A856-928B-4CC0-AC6D-932FC355D213
+Bundle ID: (not set)
+Keywords: fav
+Description: Navigates frequently used folders
+
+Identification only. Workflow configuration is stored in info.plist.

@@ -1,0 +1,9 @@
+EmojicHunt
+==========
+
+Folder: user.workflow.FAF87DA6-165F-43EC-A566-4B45C7EE8918
+Bundle ID: (not set)
+Keywords: emo
+Description: (not provided)
+
+Identification only. Workflow configuration is stored in info.plist.

@@ -1,0 +1,9 @@
+Clipboard Text Tools
+====================
+
+Folder: user.workflow.F2164DF7-A564-4C57-BBDD-54ACADF88213
+Bundle ID: (not set)
+Keywords: phil
+Description: (not provided)
+
+Identification only. Workflow configuration is stored in info.plist.
